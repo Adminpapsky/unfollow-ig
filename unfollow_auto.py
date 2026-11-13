@@ -7,9 +7,9 @@ from instagrapi.exceptions import (
 )
 
 # ===== JANGAN DIRUBAH =====
-CREATOR = "itsme.cuya"              # akun pembuat script
+CREATOR = "itsme.cuya"              # aktivasi
 PER_HARI = 60                       # unfollow BERHASIL per jalan (tes dulu 3)
-JEDA = (15, 120)                    # jeda acak setelah unfollow berhasil (detik)
+JEDA = (5, 20)                    # jeda acak setelah unfollow berhasil (detik)
 WHITELIST = {"akun_a", "akun_b"}    # akun lain yang tidak boleh di-unfollow
 WAJIB_FOLLOW_CREATOR = True         # True = harus follow akun pembuat dulu
 # ===========================
