@@ -1,2 +1,2 @@
-   instagrapi
-   requests
+requests
+instagrapi
